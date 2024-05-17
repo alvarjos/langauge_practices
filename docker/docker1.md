@@ -38,5 +38,5 @@ Images are READ ONLY, once you have created an image, you can't change it
 If you need to change something, you need to create a brand new image to incoporate that change. 
 
 - Containers are runnable instances of those images
-![Image -> Container Relationship](/home/alvarjos/Work-BYUB/langauge_practices/docker/Images_to_Containers.jpg)
+![Image -> Container Relationship](docker\Images_to_Containers.jpg)
 
