@@ -39,3 +39,27 @@ https://mostly-adequate.gitbook.io/mostly-adequate-guide
 
 
 # Shell Script (SH)
+### Youtube
+* Shell Scripting Tutorial for Beginners
+https://www.youtube.com/watch?v=cQepf9fY6cE&list=PLS1QulWo1RIYmaxcEqw5JhK3b-6rgdWO_
+
+### Interactive Course
+https://www.learnshell.org/
+
+
+
+# <span style="color:Blue;">Docker</span>
+### Youtube - Net Ninja 
+https://www.youtube.com/watch?v=31ieHmcTUOk
+
+### General Docker Guide
+https://docs.docker.com/get-started/overview/
+
+
+
+# Type Script (TS)
+### Youtube - Net Ninja
+https://www.youtube.com/watch?v=VGu1vDAWNTg&list=PL4cUxeGkcC9gNhFQgS4edYLqP7LkZcFMN
+
+### Interactive Course
+https://www.learn-ts.org/
