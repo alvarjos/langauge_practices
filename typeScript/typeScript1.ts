@@ -1,6 +1,10 @@
 // TypeScript Practice File
 // https://www.learn-ts.org/en/Introduction
 
+//
+// Run the file using ts-node typeScript1.ts in the terminal
+//
+
 // One big difference is the need to declare what data type a variable is such as string, number, etc
 // let name: string = "John";
 
