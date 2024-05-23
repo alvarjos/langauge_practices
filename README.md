@@ -35,7 +35,7 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/asy
 https://github.com/getify/You-Dont-Know-JS/blob/1st-ed/async%20&%20performance/README.md#you-dont-know-js-async--performance
 
 * Professor Frisby's Mostly Adequate Guide to Functional Programming<br>
-https://mostly-adequate.gitbook.io/mostly-adequate-guide
+https://mostly-adequate.gitbook.io/mostly-adequate-guide<br>
 
 
 # Shell Script (SH)
@@ -44,16 +44,17 @@ https://mostly-adequate.gitbook.io/mostly-adequate-guide
 https://www.youtube.com/watch?v=cQepf9fY6cE&list=PLS1QulWo1RIYmaxcEqw5JhK3b-6rgdWO_
 
 ### Interactive Course
-https://www.learnshell.org/
+* Shell Script<br>
+https://www.learnshell.org/<br>
 
 
 
-# <span style="color:Blue;">Docker</span>
+# Docker
 ### Youtube - Net Ninja 
 https://www.youtube.com/watch?v=31ieHmcTUOk
 
 ### General Docker Guide
-https://docs.docker.com/get-started/overview/
+https://docs.docker.com/get-started/overview/<br>
 
 
 
@@ -62,4 +63,20 @@ https://docs.docker.com/get-started/overview/
 https://www.youtube.com/watch?v=VGu1vDAWNTg&list=PL4cUxeGkcC9gNhFQgS4edYLqP7LkZcFMN
 
 ### Interactive Course
-https://www.learn-ts.org/
+* Type Script<br>
+https://www.learn-ts.org/<br>
+
+
+
+# Structured Query Langauge (SQL)
+### Youtube - Bro Code(MySQL tutorial for beginners)
+https://www.youtube.com/watch?v=oPV2sjMG53U&list=PLZPZq0r_RZOMskz6MdsMOgxzheIyjo-BZ
+
+### Interactive Course
+* SQL
+https://www.learnsqlonline.org/<br>
+
+
+
+# BYU - CS260 Web Programming Course 
+https://learn.cs260.click/page/essentials/introduction/introduction_md
