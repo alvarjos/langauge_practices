@@ -38,7 +38,7 @@ https://github.com/getify/You-Dont-Know-JS/blob/1st-ed/async%20&%20performance/R
 * Professor Frisby's Mostly Adequate Guide to Functional Programming<br>
 https://mostly-adequate.gitbook.io/mostly-adequate-guide<br>
 
-
+***
 
 # Python 
 ### Youtube - Net Ninja
@@ -52,7 +52,7 @@ https://www.codecademy.com/catalog/language/python
 * Learn Python for Data Science <br>
 https://www.codecademy.com/learn/paths/learn-python-for-data-science
 
-
+***
 
 # Bash/Shell (SH/BASH)
 ### Youtube
@@ -68,7 +68,7 @@ https://www.codecademy.com/catalog/language/bash <br>
 * Shell Script<br>
 https://www.learnshell.org/<br>
 
-
+***
 
 # Docker
 ### Youtube - Net Ninja 
@@ -77,7 +77,7 @@ https://www.youtube.com/watch?v=31ieHmcTUOk
 ### General Docker Guide
 https://docs.docker.com/get-started/overview/<br>
 
-
+***
 
 # Type Script (TS)
 ### Youtube - Net Ninja
@@ -87,7 +87,7 @@ https://www.youtube.com/watch?v=VGu1vDAWNTg&list=PL4cUxeGkcC9gNhFQgS4edYLqP7LkZc
 * Type Script<br>
 https://www.learn-ts.org/<br>
 
-
+***
 
 # Structured Query Langauge (SQL)
 ### Youtube - Bro Code(MySQL tutorial for beginners)
@@ -101,7 +101,7 @@ https://www.codecademy.com/catalog/language/sql<br>
 * SQL<br>
 https://www.learnsqlonline.org/<br>
 
-
+***
 
 # Amazon Web Service (AWS)
 ### Youtube Tutorials
@@ -143,6 +143,7 @@ https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_AWSCLI_Fargate.h
 * Microservices Architecture <br>
 https://microservices.io/patterns/index.html <br>
 
+***
 
 # Technical Job Interview Practices
 ### Python
@@ -159,37 +160,41 @@ https://www.codecademy.com/learn/paths/intprep-ds-ds-interview-prep <br>
 
 <br>
 
+***
+
 # Top Career Paths - Codecademy Courses
-* Full Stack Engineer -A full-stack engineer can get a project done from start to finish, back-end to front-end. Includes JavaScript, Node.JS, SQL, Express.JS, React, TDD, and more. <br>
+* **Full Stack Engineer** -A full-stack engineer can get a project done from start to finish, back-end to front-end. Includes JavaScript, Node.JS, SQL, Express.JS, React, TDD, and more. <br>
 https://www.codecademy.com/learn/paths/full-stack-engineer-career-path <br>
 
-* Front-End Engineer - Front-end engineers work closely with designers to make websites beautiful, functional, and fast. Includes HTML, CSS, JavaScript, Front-End, Web Apps, React, and more. <br>
+* **Front-End Engineer** - Front-end engineers work closely with designers to make websites beautiful, functional, and fast. Includes HTML, CSS, JavaScript, Front-End, Web Apps, React, and more. <br>
 https://www.codecademy.com/learn/paths/front-end-engineer-career-path <br>
 
-* Back-End Engineer - Back-end developers deal with the hidden processes that run behind the scenes, building APIs and databases that power the front-end. Includes Node.JS, Express.JS, PostgreSQL, Back-End, SQL, Security, and more. <br>
+* **Back-End Engineer** - Back-end developers deal with the hidden processes that run behind the scenes, building APIs and databases that power the front-end. Includes Node.JS, Express.JS, PostgreSQL, Back-End, SQL, Security, and more. <br>
 https://www.codecademy.com/learn/paths/back-end-engineer-career-path
 
-* Computer Science - Looking for an introduction to the theory behind programming? Master Python while learning data structures, algorithms, and more! Includes Python, Command Line, Git, Data Structures, and more. <br> 
+* **Computer Science** - Looking for an introduction to the theory behind programming? Master Python while learning data structures, algorithms, and more! Includes Python, Command Line, Git, Data Structures, and more. <br> 
 https://www.codecademy.com/learn/paths/computer-science <br>
 
+***
+
 # Data Scientist Career Paths - Codecademy Courses
-1. Data Scientist: Machine Learning Specialist <br> 
+1. **Data Scientist: Machine Learning Specialist** <br> 
 Machine Learning Data Scientists solve problems at scale, make predictions, find patterns, and more! They use Python, SQL, and algorithms. Includes Python 3, SQL, pandas, scikit-learn, Matplotlib, TensorFlow, and more <br>
 https://www.codecademy.com/learn/paths/data-science <br>
 
-2. Data Scientist: Analytics Specialist <br>
+2. **Data Scientist: Analytics Specialist** <br>
 Data Analysts and Analytics Data Scientists use Python and SQL to query, analyze, and visualize data — and communicate findings. Includes Python 3, SQL, pandas, scikit-learn, Matplotlib, Tableau, Excel, and more. <br>
 https://www.codecademy.com/learn/paths/data-analyst <br>
 
-3. Data Scientist: Inference Specialist <br>
+3. **Data Scientist: Inference Specialist** <br>
 Inference Data Scientists run A/B tests, do root-cause analysis, and conduct experiments. They use Python, SQL, and R to analyze data. Includes Python 3, SQL, R, pandas, scikit-learn, NumPy, Matplotlib, and more. <br>
 https://www.codecademy.com/learn/paths/data-science-inf <br>
 
-4. Data Scientist: Natural Language Processing Specialist <br>
+4. **Data Scientist: Natural Language Processing Specialist** <br>
 NLP Data Scientists find meaning in language, analyze text and speech, and create chatbots. They use Python, SQL, & NLP to answer questions. Includes Python 3, SQL, pandas, scikit-learn, SpaCy, NLTK, Tensorflow, Matplotlib, and more. <br> 
 https://www.codecademy.com/learn/paths/data-science-nlp <br>
 
-
+***
 
 # BYU - CS260 Web Programming Course 
 https://learn.cs260.click/page/essentials/introduction/introduction_md
