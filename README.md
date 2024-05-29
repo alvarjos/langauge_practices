@@ -38,6 +38,14 @@ https://github.com/getify/You-Dont-Know-JS/blob/1st-ed/async%20&%20performance/R
 https://mostly-adequate.gitbook.io/mostly-adequate-guide<br>
 
 
+
+# Python 
+### Youtube - Net Ninja
+* Python<br>
+https://www.youtube.com/watch?v=wdp7smAtqZI&list=PL4cUxeGkcC9goeb7U1FXFdNszWetCmhfB
+
+
+
 # Shell Script (SH)
 ### Youtube
 * Shell Scripting Tutorial for Beginners<br>
@@ -73,9 +81,50 @@ https://www.learn-ts.org/<br>
 https://www.youtube.com/watch?v=oPV2sjMG53U&list=PLZPZq0r_RZOMskz6MdsMOgxzheIyjo-BZ
 
 ### Interactive Course
-* SQL
+* SQL<br>
 https://www.learnsqlonline.org/<br>
 
+
+
+# Amazon Web Service (AWS)
+### Youtube Tutorials
+* Intro to AWS - The Most Important Services to Learn <br>
+https://www.youtube.com/watch?v=FDEpdNdFglI
+
+* AWS EC2 Tutorial for Beginners <br>
+https://www.youtube.com/watch?v=8TlukLu11Yo
+
+* AWS ECS Tutorial for Beginners <br>
+https://www.youtube.com/watch?v=46mFdtpy3NQ
+
+* AWS Lambda Tutorial for Beginners <br>
+https://www.youtube.com/watch?v=97q30JjEq9Y
+
+* AWS EC2 vs ECS vs Lambda <br>
+https://www.youtube.com/watch?v=-L6g9J9_zB8
+
+* AWS SNS Tutorial for Beginners <br>
+https://www.youtube.com/watch?v=bktTomENEX8&list=PL9nWRykSBSFg-CziAHKjr0XnvghEVkpFi
+
+* AWS SQS Tutorial for Beginners <br>
+https://www.youtube.com/watch?v=CyYZ3adwboc
+
+* AWS SNS to SQS Tutorial <br>
+https://www.youtube.com/watch?v=VXsAgYoC1Jc&list=PL9nWRykSBSFifLg_aXthARjtSec03_03t
+
+* AWS DynamoDB Tutorial for Beginners<br>
+https://www.youtube.com/watch?v=2k2GINpO308&list=PL9nWRykSBSFi5QD8ssI0W5odL9S0309E2
+
+* What are Microservices? <br>
+https://www.youtube.com/watch?v=CdBtNQZH8a4&t=211s
+
+
+### AWS Readings
+* Learn how to create an Amazon ECS Linux task for the Fargate launch type with the AWS CLI <br>
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_AWSCLI_Fargate.html
+
+* Microservices Architecture <br>
+https://microservices.io/patterns/index.html <br>
 
 
 # BYU - CS260 Web Programming Course 
