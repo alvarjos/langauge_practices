@@ -155,7 +155,7 @@ https://www.codecademy.com/learn/paths/intprep-ds-ds-interview-prep <br>
 https://www.codecademy.com/learn/paths/pass-the-technical-interview-with-javascript<br>
 
 ### SQL 
-* Data Scientist Interview Preparation
+* Data Scientist Interview Preparation <br>
 https://www.codecademy.com/learn/paths/intprep-ds-ds-interview-prep <br>
 
 <br>
