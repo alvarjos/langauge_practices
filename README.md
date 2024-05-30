@@ -1,6 +1,5 @@
 # CS langauges
-A repository that has notes files and tutorials on various CS langauges
-
+A repository that has notes, files and tutorials on various CS langauges
 Here is all the links to the tutorials for each langauge 
 
 # JavaScript (JS)
@@ -94,7 +93,7 @@ https://www.learn-ts.org/<br>
 https://www.youtube.com/watch?v=oPV2sjMG53U&list=PLZPZq0r_RZOMskz6MdsMOgxzheIyjo-BZ
 
 ### Codecademy - SQL
-* SQL Courses
+* SQL Courses<br>
 https://www.codecademy.com/catalog/language/sql<br>
 
 ### Interactive Course
