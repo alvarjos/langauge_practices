@@ -34,13 +34,13 @@
 // notSure = false;
 
 // // Functions in TypeScript
-const addition = (a: number, b: number): number => {
+function addition(a: number, b: number): number {
     return a + b;
 }
 console.log(addition(2, 2))
 // or 
-const newnum = (a: number, b: number): number => a + b;
-newnum(2,2)
+// const newnum = (a: number, b: number): number => a + b;
+// newnum(2,2)
 
 // Arrays can be defined in TypeScript using either the array type syntax or the generic array type:
 
