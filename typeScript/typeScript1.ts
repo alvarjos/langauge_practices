@@ -34,7 +34,7 @@
 // notSure = false;
 
 // // Functions in TypeScript
-function addition(a: number, b: number): number {
+const addition = (a: number, b: number): number => {
     return a + b;
 }
 console.log(addition(2, 2))
@@ -100,19 +100,19 @@ export default function Component(): string {
 let someValue: any = "This is a string";
 let strLength: number = (<string>someValue).length;
 // Or using as-syntax
-// let strLengthAs: number = (someValue as string).length;
+let strLengthAs: number = (someValue as string).length;
 
 type aStringOrNumber = string | number;
 let aStringOrNumber = 20
 console.log(aStringOrNumber)
 
 // // Intersection types allow you to combine multiple types into one, enabling objects to have properties of all intersected types.
-// type Name = { name: string };
-// type Age = { age: number };
-// type schoolYear = {schoolYear: string}
-// type Person1 = Name & Age | schoolYear;
-// let Person1 = {"Angel": "20" };
-// console.log(Person1);
+type Name = { name: string };
+type Age = { age: number };
+type schoolYear = {schoolYear: string}
+type Person1 = Name & Age | schoolYear;
+let Person1 = {"Angel": "20" };
+console.log(Person1);
 
 // // Tutorial Type
 // type Car = { type: "car", doors: number };
@@ -131,7 +131,8 @@ console.log(aStringOrNumber)
 // console.log(identifyVehicle({ type: "bike", hasBell: true }));
 
 
-// Conditional types help in expressing types in relation to other types, particularly in generic types. It has the syntax T extends U ? X : Y.
+// Conditional types help in expressing types in relation to other types, particularly in generic types. 
+// It has the syntax T extends U ? X : Y.
 type TypeName<T> = 
     T extends string ? "string" :
     T extends number ? "number" :
