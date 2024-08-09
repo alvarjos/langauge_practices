@@ -83,8 +83,11 @@ https://docs.docker.com/get-started/overview/<br>
 https://www.youtube.com/watch?v=VGu1vDAWNTg&list=PL4cUxeGkcC9gNhFQgS4edYLqP7LkZcFMN
 
 ### Interactive Course
-* Type Script<br>
+* Type Script Beginner<br>
 https://www.learn-ts.org/<br>
+
+* Type Script Guide, Theory and Syntax Cheatsheet<br>
+https://www.typescriptlang.org/<br>
 
 ***
 
