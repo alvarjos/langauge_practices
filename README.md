@@ -22,8 +22,8 @@ https://www.codecademy.com/courses/asynchronous-javascript/lessons/promises/exer
 
 
 ### Readings
-* Eloquent JavaScript: Asynchronous Programming:<br> 
-https://eloquentjavascript.net/11_async.html 
+* Eloquent JavaScript:<br> 
+ https://eloquentjavascript.net/index.html
 
 * The Event Loop: <br>
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop
@@ -133,6 +133,9 @@ https://www.youtube.com/watch?v=VXsAgYoC1Jc&list=PL9nWRykSBSFifLg_aXthARjtSec03_
 
 * AWS DynamoDB Tutorial for Beginners<br>
 https://www.youtube.com/watch?v=2k2GINpO308&list=PL9nWRykSBSFi5QD8ssI0W5odL9S0309E2
+
+* API Tutorial for Beginners<br>
+https://www.youtube.com/watch?v=WXsD0ZgxjRw
 
 * What are Microservices? <br>
 https://www.youtube.com/watch?v=CdBtNQZH8a4&t=211s

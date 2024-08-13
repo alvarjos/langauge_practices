@@ -36,12 +36,13 @@ AnalyticsService
 * Application Decoupling - Decouple service dependencies
 
 ### Standard vs FIFO Queues
-Standard<br> 
+### Standard 
 * Best Effort Ordering (Messages aren't always in order)
 * At least Once Delivery
 * Unlimited Throughput (unlimited processing, polling and publishing rate)
-<br>FIFO<br>
+<br>
 
+### FIFO
 * First in First out
 * Exactly once processing
 * 3OO TPS Max(3000 with Batching)
