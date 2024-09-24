@@ -20,6 +20,9 @@ https://www.codecademy.com/learn/learn-intermediate-javascript
 * JavaScript - Promises & Async/Await <br>
 https://www.codecademy.com/courses/asynchronous-javascript/lessons/promises/exercises/introduction
 
+### W3School
+JS Tutorials
+https://www.w3schools.com/js/default.asp
 
 ### Readings
 * Eloquent JavaScript:<br> 
