@@ -216,3 +216,103 @@ for await (const result of scrollSearch) {
 ```
 
 This approach will map each document's query field and return it in the yielded array for each scroll result batch.
+
+
+Your setup looks solid overall. You're leveraging Express, OpenSearch, and asynchronous generator functions in a typical Node.js application. However, there are a couple of improvements and fixes that can help smooth the execution of your code.
+
+Issues and Suggestions
+Controller: The controller should call the dataSource correctly and handle the async iteration.
+Data Source: Your data source method correctly yields the documents, but ensure the client.helpers.scrollSearch is correctly initialized and handled.
+Handler: You're using the asyncHandler pattern, but make sure getAllQueryResponses is designed to correctly accumulate data.
+Here’s a revised approach:
+
+1. Data Source: getAllQueryResponses
+It looks like you're implementing a scroll search in OpenSearch (or Elasticsearch), which is efficient for large datasets. The async generator for await pattern is perfect here. Here’s the code with a minor adjustment:
+
+```javascript
+const getAllQueryResponses = (client) => {
+  return async function* (size = 100) {
+    const scrollSearch = client.helpers.scrollSearch({
+      index: QUERY_INDEX_BASE_NAME,
+      body: { size }
+    });
+
+    for await (const result of scrollSearch) {
+      // Ensure result.documents exists and map over it
+      if (result.documents) {
+        yield result.documents.map(d => d.query);
+      }
+    }
+  };
+};
+```
+2. Controller: getAllQueryResponses Handler
+The main adjustment is in how you iterate over the async generator. You’ll need to gather all the results from the generator and store them in req.responseData.
+
+```javascript
+const getAllQueryResponses = async (req, res, next) => {
+  try {
+    const queryResponses = [];
+    const scrollQueryResponses = req.dataSources.content.getAllQueryResponses(req.client); // Assuming req.client is your OpenSearch client
+
+    for await (const queries of scrollQueryResponses()) {
+      queryResponses.push(...queries); // Append all results into a single array
+    }
+
+    req.responseData = {
+      ...req.responseData,
+      queries: queryResponses // Store the queries in responseData
+    };
+
+    next();
+  } catch (error) {
+    next(error); // Forward error to error-handling middleware
+  }
+};
+```
+3. Express Router
+Your router definition looks good overall, but make sure asyncHandler correctly handles async functions and passes errors to the middleware.
+
+```javascript
+const router = express.Router();
+
+/**
+* @swagger
+* /search/v1/admin/query/all-query-responses:
+*  get:
+*    summary: Get ALL previous queries
+*    description: >-
+*      Retrieves all of the previous queries from the OpenSearch index
+*    responses:
+*      '200':
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/schemas/GetAllQueryResponses'
+*/
+router.get(
+  '/all-query-responses',
+  asyncHandler(getAllQueryResponses), // Controller
+  asyncHandler(filter(GetAllQueryResponses, 'responseData')), // Filter middleware
+  (req, res) => res.json(req.responseData) // Send the final JSON response
+);
+
+module.exports = router;
+```
+
+Key Changes:
+The getAllQueryResponses handler now gathers all results from the async generator into a single array.
+The data source (getAllQueryResponses) correctly maps the documents and yields them.
+The router remains the same but ensures the controller and filter middleware work asynchronously.
+This structure should handle your use case of retrieving all previous queries efficiently, using scroll search to paginate large datasets from OpenSearch.
+
+
+
+
+
+
+
+
+
+
+
