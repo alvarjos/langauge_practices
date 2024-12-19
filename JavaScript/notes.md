@@ -664,6 +664,20 @@ The `saveSearchContent` function is an Express middleware that saves a content i
 ### Summary
 This function validates IDs, saves the content, sets an appropriate status code, and then passes control to the next middleware for response handling. If the IDs don’t match, it stops with a `400` error to ensure data consistency.
 
+```js
+const saveContent = (client) => async (content) => {
+  const { body } = await client.index({
+    index: CONTENT_INDEX_BASE_NAME,
+    refresh: true,
+    id: content.id,
+    body: content
+  })
+
+  return {
+    result: body.result
+  }
+}
+
 The `saveContent` function is an asynchronous function that saves a content item to an index in a search client (likely Elasticsearch or OpenSearch). Here’s a breakdown of what each part does:
 
 1. **Function Structure**:
@@ -719,5 +733,260 @@ The `saveQuery` function is an Express middleware that saves a query item to a d
 
 ### Summary
 The `saveQuery` function validates IDs, saves the query item, and sets the appropriate status code based on whether the item was created or updated. If the IDs don’t match, it sends a "404 Not Found" error to prevent processing a non-existent or mismatched record.
+
+The `saveContent` function is an asynchronous function that uses a search client (likely Elasticsearch or OpenSearch) to index (save) a content item in a specific index. Here’s a step-by-step breakdown:
+
+1. **Higher-Order Function**:
+   - `saveContent` is a higher-order function. It takes a `client` as its first argument and returns another asynchronous function that takes `content` as an argument.
+   - This pattern makes it easy to configure `saveContent` with different clients or configurations by providing `client` only once.
+
+2. **Indexing Operation**:
+   - Inside the inner function, the `client.index` method is called to index the content item into a specified index. This operation either adds the document if it’s new or updates it if a document with the same `id` already exists.
+   - The `client.index` call includes several options:
+     - **`index`**: Specifies the name of the index where the content will be stored, referenced by `CONTENT_INDEX_BASE_NAME`.
+     - **`refresh: true`**: Ensures that the index is refreshed immediately after this operation, making the content available for search as soon as it's indexed.
+     - **`id: content.id`**: Sets the document ID for this content item. If this ID already exists in the index, the existing document will be updated.
+     - **`body: content`**: The content object itself is stored as the document body.
+
+3. **Response Handling**:
+   - The `client.index` method returns a response, from which `{ body }` is destructured.
+   - `body.result` holds the result of the operation, typically indicating whether the document was `"created"` or `"updated"`.
+   
+4. **Return Value**:
+   - The function returns an object containing `{ result: body.result }`, allowing the calling function to know if the content item was newly created or just updated.
+```
+### Summary
+This function saves a content item to an index in a search client (e.g., Elasticsearch). It either creates a new document or updates an existing one based on `content.id`. The function immediately refreshes the index for search availability and returns an object indicating the result (`created` or `updated`). This approach ensures consistency in the index and allows efficient querying.
+
+```js
+const saveQuery = (client) => async (req, res, next) => { 
+  const { queryId } = req.params
+
+  try {
+    await client.index({
+       index: QUERY_INDEX_BASE_NAME,
+       refresh: true,
+       document: { queryId, timestamp: new Date() } 
+    })
+
+    await client.index({
+      index: CURRENT_ACTIVE_BASE_NAME,
+      document: { queryId, active: true, timestamp: new Date() }
+    })
+
+    req.responseData = {
+      status: 'success',
+      message: 'Query ID saved successfully'
+    }
+
+    next()
+  }
+  catch(error) {
+    console.error('Error saving query ID: ', error)
+    res.status(500).json({status: 'error', message: 'Failed to save Query ID'})
+  }
+}
+```
+The `saveQuery` function is an asynchronous Express middleware that saves a query ID to two different indices in a search client (e.g., Elasticsearch or OpenSearch) and responds based on the success or failure of the operation. Here’s a breakdown of each part:
+
+1. **Higher-Order Function Structure**:
+   - `saveQuery` is a higher-order function that takes `client` as an argument. This allows different clients to be passed in when `saveQuery` is used.
+   - The inner function is asynchronous and takes `req`, `res`, and `next` as parameters, making it compatible with Express middleware.
+
+2. **Extract Query ID**:
+   - The function extracts `queryId` from the URL parameters (`req.params.queryId`).
+
+3. **Indexing Operations**:
+   - Two indexing operations are performed in sequence, each using `client.index`:
+     - **First Operation**:
+       - Adds an entry in the `QUERY_INDEX_BASE_NAME` index to log the query with the `queryId` and a `timestamp`.
+       - **`index`:** Specifies the index name, `QUERY_INDEX_BASE_NAME`.
+       - **`refresh: true`:** Ensures the index is refreshed immediately, making the new entry searchable.
+       - **`document`:** Contains the document to store, including `queryId` and the current `timestamp`.
+     - **Second Operation**:
+       - Adds or updates an entry in the `CURRENT_ACTIVE_BASE_NAME` index to mark the query as active.
+       - **`index`:** Specifies the `CURRENT_ACTIVE_BASE_NAME` index.
+       - **`document`:** Contains `queryId`, a flag `active: true`, and the current `timestamp`.
+
+4. **Setting Response Data**:
+   - If both indexing operations succeed, the function sets `req.responseData` with a success message, indicating that the query ID was saved successfully. This data can be used by downstream middleware to generate the response.
+
+5. **Error Handling**:
+   - If an error occurs during either of the indexing operations, the `catch` block handles it.
+   - **Logging**: Logs an error message to the console.
+   - **Response**: Sends a `500 Internal Server Error` response with a JSON object containing `status: 'error'` and an appropriate message.
+
+6. **Pass Control to Next Middleware**:
+   - If no error occurs, `next()` is called to move to the next middleware in the chain, where `req.responseData` can be used to build the final response.
+
+### Summary
+The `saveQuery` function logs a query in two indices to track the query’s history and mark it as active. It handles successful operations by setting `req.responseData` with a success message and passes control to the next middleware. In case of an error, it logs the error and sends a `500` status response to the client. This function ensures both logging and error resilience when saving query data.
+
+## Adjusted saveQuery
+
+To adjust the `saveQuery` function to save a query template along with a unique ID, you can use a UUID to generate the unique identifier for each query. This way, each query template saved will have a distinct identifier that you can use to look it up later.
+
+Here’s how to modify `saveQuery` to meet these requirements:
+
+1. **Generate a Unique ID**: Use a UUID (or similar unique identifier) as the `queryId` instead of taking it from `req.params`. This unique ID can be stored in the index and later used to match or retrieve the specific query.
+
+2. **Save Query Template with the Unique ID**: Save the query template with this unique ID in the appropriate index.
+
+3. **Respond with the Unique ID**: Set `req.responseData` to include the unique ID so it can be accessed by the client.
+
+Here’s how the revised `saveQuery` function could look:
+
+```javascript
+const { v4: uuidv4 } = require('uuid');  // Import a UUID generator
+
+const saveQuery = (client) => async (req, res, next) => { 
+  // Generate a unique ID for the query template
+  const uniqueQueryId = uuidv4();
+  
+  try {
+    // Save the query template with the generated unique ID in the first index
+    await client.index({
+       index: QUERY_INDEX_BASE_NAME,
+       refresh: true,
+       document: { 
+         id: uniqueQueryId,          // Store the unique ID
+         queryTemplate: req.body,     // Store the query template from the request body
+         timestamp: new Date() 
+       }
+    });
+
+    // Optionally save an "active" record for this query in another index
+    await client.index({
+      index: CURRENT_ACTIVE_BASE_NAME,
+      refresh: true,
+      document: { 
+        queryId: uniqueQueryId,       // Reference the same unique ID
+        active: true, 
+        timestamp: new Date() 
+      }
+    });
+
+    // Set response data to include the unique query ID
+    req.responseData = {
+      status: 'success',
+      message: 'Query template saved successfully',
+      queryId: uniqueQueryId          // Include the unique ID in the response
+    };
+
+    next();
+  }
+  catch(error) {
+    console.error('Error saving query template: ', error);
+    res.status(500).json({ status: 'error', message: 'Failed to save query template' });
+  }
+}
+```
+
+### Explanation of Changes
+
+1. **`uuidv4()`**: This generates a unique ID (`uniqueQueryId`) for each query template, which can be saved and used for future lookups.
+
+2. **Indexing with `uniqueQueryId`**:
+   - The first `client.index` call saves the query template along with the `uniqueQueryId` in `QUERY_INDEX_BASE_NAME`.
+   - The second `client.index` call saves a reference to this unique ID in `CURRENT_ACTIVE_BASE_NAME` and marks it as active.
+
+3. **Response Data**:
+   - `req.responseData` now includes `queryId: uniqueQueryId`, allowing downstream middleware to access this unique ID and send it in the response to the client.
+
+4. **Error Handling**:
+   - The `catch` block handles any errors during the indexing process, logging the error and sending a `500` error response.
+
+### Summary
+This updated `saveQuery` function generates a unique ID for each query template, saves the template in one index, optionally marks it as active in another, and includes the unique ID in the response. This setup allows you to use the unique ID to reference or retrieve the query template later.
+
+
+
+
+
+Got it! To save a query template to both indexes with specific parameters for each, you can modify the function to create different document structures for each index. Here’s how you can implement it:
+
+```javascript
+const { v4: uuidv4 } = require('uuid');
+
+// Function to save query template to both indexes
+const saveQueryTemplateToBoth = (client) => async (req) => {
+  // Generate a unique ID for the query
+  const uniqueQueryId = uuidv4();
+
+  // Define documents to be saved in each index
+  const queryTemplateDocument = {
+    id: uniqueQueryId,
+    queryTemplate: req.body,
+    timestamp: new Date(),
+  };
+
+  const currentActiveDocument = {
+    queryId: uniqueQueryId,
+    active: true,
+    timestamp: new Date(),
+  };
+
+  // Save to QUERY_INDEX_BASE_NAME
+  const queryIndexResult = await client.index({
+    index: QUERY_INDEX_BASE_NAME,
+    refresh: true,
+    document: queryTemplateDocument,
+  });
+
+const activeResult = await client.index
+
+  // Save to CURRENT_ACTIVE_BASE_NAME
+  const activeIndexResult = await client.index({
+    index: CURRENT_ACTIVE_BASE_NAME,
+    document: currentActiveDocument,
+  });
+
+  // Return the unique ID and result statuses for both operations
+  return {
+    id: uniqueQueryId,
+    results: [
+      { index: QUERY_INDEX_BASE_NAME, result: queryIndexResult.body.result },
+      { index: CURRENT_ACTIVE_BASE_NAME, result: activeIndexResult.body.result },
+    ],
+  };
+};
+```
+
+### Explanation
+
+1. **Generate Unique ID**: `uniqueQueryId` is created using `uuidv4()` and will be used to reference the same query across both indexes.
+2. **Define Documents**:
+   - `queryTemplateDocument`: This is the document for `QUERY_INDEX_BASE_NAME`, containing `id`, `queryTemplate` (from `req.body`), and a `timestamp`.
+   - `currentActiveDocument`: This is for `CURRENT_ACTIVE_BASE_NAME`, containing `queryId`, `active: true`, and a `timestamp`.
+3. **Indexing**:
+   - The function uses `await client.index` twice to save each document to its respective index.
+4. **Return Result**: Returns `uniqueQueryId` and the indexing results for each operation.
+
+### Example Usage
+
+To use this function, call it with your `client` and `req` object:
+
+```javascript
+const client = ...; // Elasticsearch client setup
+const req = {
+  body: { /* your query template here */ }
+};
+
+saveQueryTemplateToBoth(client)(req).then((response) => {
+  console.log(`Template saved with ID: ${response.id}`);
+  console.log('Results:', response.results);
+}).catch((error) => {
+  console.error('Error saving query template:', error);
+});
+```
+
+This setup will save the query template to `QUERY_INDEX_BASE_NAME` and activate it in `CURRENT_ACTIVE_BASE_NAME` with a consistent ID. Let me know if you’d like further modifications!
+
+
+
+
+## Example Query for POST API
+{ "query": "{ function_score: { score_mode: sum, query: { bool: { must_not: { term: { type: season } }, filter: placeholder, should: { multi_match: { query: searchTerm, fields: [ title^15, tags^10, shortDescription, longDescription, people, people.bigrammed^10, airDateText, airDateText.bigrammed^4, rootParent.title^0.1, rootParent.shortDescription^0.1, rootParent.longDescription^0.1, rootParent.people^0.1, rootParent.people.bigrammed^0.1 ], tie_breaker: 0 } } } }, functions: [ { weight: 1000, filter: { term: { type: show } } }, { weight: 100, exp: { airDate: { origin: now, scale: 1825d, decay: 0.9 } } }, { weight: 1, filter: { match_phrase: { longDescription: { query: searchTerm, slop: 1, boost: 100 } } } }, { weight: 1, filter: { match_phrase: { title: { query: searchTerm, slop: 1, boost: 1000 } } } }, { weight: 1, filter: { match_phrase: { people: { query: searchTerm, slop: 1, boost: 1000 } } } }, { weight: 3, filter: { match_phrase: { titleFullMatch: { query: toFullMatch, boost: 1004 } } } }, { weight: 3, filter: { match_phrase: { peopleFullMatch: { query: toFullMatch, boost: 1000 } } } }, { weight: 1, filter: { match_phrase: { airDateText: { query: searchTerm, boost: 1000 } } } }, { weight: 1 } ] } }"
+ }
 
 

@@ -1,0 +1,803 @@
+```js
+const podcastJson = {
+    rss: {
+      _attrs: {
+        version: '2.0',
+        'xmlns:itunes': 'http://www.itunes.com/dtds/podcast-1.0.dtd',
+        'xmlns:content': 'http://purl.org/rss/1.0/modules/content/',
+        'xmlns:googleplay': 'http://www.google.com/schemas/play-podcasts/1.0',
+        'xmlns:podcast': 'https://podcastindex.org/namespace/1.0',
+      },
+      channel: [
+        {
+          title: cleanupForXml(
+            podcast.requestedAssetType
+              ? `${podcast.content.title} (${titleSuffixMap[podcast.requestedAssetType]})`
+              : podcast.content.title,
+          ),
+        },
+        {
+          description: cleanupForXml(podcast.content.longDescription),
+        },
+        {
+          _name: 'itunes:image',
+          _attrs: {
+            href: `${mainImageData.baseUrl}/${mainImageData.imageId}/${mainImageData.maxSize}.jpg`,
+          },
+        },
+        ...categories.map((c) => {
+          if (c.type === PodcastCategoryTypes.CATEGORY) {
+            return {
+              _name: 'itunes:category',
+              _attrs: {
+                text: cleanupForXml(c.name),
+              },
+            }
+          }
+
+          return {
+            'itunes:category': {
+              _attrs: {
+                text: cleanupForXml(c.parentCategoryName),
+              },
+              'itunes:category': {
+                _attrs: {
+                  text: cleanupForXml(c.name),
+                },
+              },
+            },
+          }
+        }),
+        {
+          link: `https://${propertyWebAddresses[podcast.content.property]}/${podcast.content.id}`,
+        },
+        {
+          language: 'en-us',
+        },
+        {
+          copyright: `&#xA9; ${new Date().getFullYear()} BYU Broadcasting`,
+        },
+        {
+          'itunes:author': cleanupForXml(
+            podcast.content.property.replace('byu', 'BYU'),
+          ),
+        },
+        {
+          'itunes:owner': {
+            'itunes:name': cleanupForXml(
+              podcast.content.property.replace('byu', 'BYU'),
+            ),
+            'itunes:email': propertyEmails[podcast.content.property],
+          },
+        },
+        {
+          'itunes:explicit': false,
+        },
+        {
+          'itunes:type': _getItunesType(podcast.content),
+        },
+        // individual podcast items items
+        ...podcast.contentItems.map(
+          _createFeedItem({
+            ...podcast.content.podcastSettings,
+            showId: podcast.content.id,
+          }),
+        ),
+      ],
+    },
+  }
+```
+
+This code generates a **JSON structure** that will be converted into an **RSS feed** for a podcast. RSS feeds are XML-based documents used to distribute content like podcasts, and this particular script is defining the structure and metadata of the feed.
+
+Here’s a simple explanation of what’s happening:
+
+---
+
+### 1. **Top-Level Structure**
+- The main object is `podcastJson`, representing the root of the RSS feed.
+- Inside, there’s an `rss` property:
+  - **`_attrs`**: Attributes of the `<rss>` tag (e.g., version `2.0` and namespace definitions for iTunes, Google Play, etc.).
+  - **`channel`**: The main section of the feed, holding details about the podcast and its episodes.
+
+---
+
+### 2. **Channel Metadata**
+The `channel` property contains an array of objects, each defining parts of the podcast metadata:
+
+#### Key Elements:
+1. **Title**: The podcast's name, optionally including a suffix like "(Special Edition)" based on its type:
+   ```javascript
+   podcast.content.title + titleSuffixMap[podcast.requestedAssetType]
+   ```
+
+2. **Description**: A long-form description of the podcast content.
+
+3. **Image**: Specifies the podcast cover art:
+   ```javascript
+   'itunes:image': {
+       href: `${mainImageData.baseUrl}/${mainImageData.imageId}/${mainImageData.maxSize}.jpg`,
+   }
+   ```
+
+4. **Categories**: Lists podcast categories (e.g., "Technology" or "Education"). Some categories may be nested within parent categories:
+   ```javascript
+   'itunes:category': {
+       _attrs: { text: cleanupForXml(c.name) }
+   }
+   ```
+
+5. **Link**: A URL pointing to the podcast’s web page.
+
+6. **Language**: The language of the podcast (e.g., `en-us`).
+
+7. **Copyright**: A copyright statement with the current year.
+
+8. **Author and Owner**: Information about the podcast creator, including their name and email:
+   ```javascript
+   'itunes:owner': {
+       'itunes:name': 'BYU Broadcasting',
+       'itunes:email': propertyEmails[podcast.content.property],
+   }
+   ```
+
+9. **Explicit Content**: A flag indicating whether the podcast contains explicit material (`false` here).
+
+10. **Podcast Type**: Defines the type (e.g., episodic or serial) using a helper function `_getItunesType`.
+
+---
+
+### 3. **Episodes (Items)**
+At the end of the `channel`, there’s a list of episodes (`contentItems`) generated by the function `_createFeedItem`. Each episode is added as an individual `<item>` element in the RSS feed, including details like title, description, media file links, and publication dates.
+
+---
+
+### 4. **Helper Functions and Cleanup**
+- **`cleanupForXml`**: Ensures text is XML-safe (e.g., escaping special characters).
+- **`_createFeedItem`**: Constructs metadata for individual episodes.
+- **`_getItunesType`**: Determines the type of podcast (likely "episodic" or "serial").
+
+---
+
+### What This Generates
+The code creates a JSON structure like this (simplified XML output for clarity):
+
+```xml
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>Podcast Title</title>
+    <description>Long Description of the Podcast</description>
+    <itunes:image href="https://example.com/image.jpg"/>
+    <itunes:category text="Education"/>
+    <link>https://example.com/podcast</link>
+    <language>en-us</language>
+    <copyright>© 2024 BYU Broadcasting</copyright>
+    <itunes:author>BYU Broadcasting</itunes:author>
+    <itunes:owner>
+      <itunes:name>BYU Broadcasting</itunes:name>
+      <itunes:email>contact@byu.edu</itunes:email>
+    </itunes:owner>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:type>episodic</itunes:type>
+    <!-- Podcast episodes go here -->
+  </channel>
+</rss>
+```
+
+This is used by platforms like **Apple Podcasts** or **Google Podcasts** to display your podcast metadata and episodes.
+
+
+To integrate the ability to add **chapters/segments** to an MP3 file for Apple Music Podcasts, you’ll need to extend the existing `getEpisodeChapters` functionality by encoding the generated chapter data into the **MP3 file** using ID3 tags.
+
+Here’s how you can approach it:
+
+---
+
+### 1. **Generate Chapter Data**
+The `getEpisodeChapters` function already generates the required chapter data in a format suitable for the **Podcast Namespace chapters spec**. This includes:
+- `startTime` and `endTime` for each segment.
+- Optional `imageUrl` for each chapter.
+- The `title` for each chapter.
+
+This is your starting point.
+
+---
+
+### 2. **Add Chapter Data to MP3 Files**
+To add chapters to MP3 files, you must write the chapter data as **ID3 tags**. Specifically, you’ll use **CHAP** (chapter) and **CTOC** (table of contents) frames defined in the ID3v2.4 specification.
+
+#### Tools for Handling ID3 Tags
+- **Node.js Libraries**:
+  - [id3-writer](https://github.com/drozhzhin-n-e/id3-writer) or [music-metadata](https://github.com/Borewit/music-metadata) for handling ID3 tags.
+  - For full CHAP and CTOC support, you may need to manually encode these frames.
+- Alternatively, use a binary editor library like `Buffer` to create CHAP frames.
+
+#### Example: Adding Chapters to MP3
+Below is an outline of how to write chapters into an MP3 file:
+
+```javascript
+const fs = require('fs');
+const ID3Writer = require('id3-writer');
+
+async function addChaptersToMp3(mp3FilePath, chapterData) {
+  const mp3Buffer = fs.readFileSync(mp3FilePath);
+
+  const writer = new ID3Writer(mp3Buffer);
+
+  // Add main metadata (title, artist, etc.)
+  writer.setFrame('TIT2', 'Podcast Episode Title')
+        .setFrame('TPE1', ['Podcast Author']);
+
+  // Add chapter frames (CHAP)
+  chapterData.forEach((chapter, index) => {
+    writer.setChapterFrame(`CHAP${index + 1}`, {
+      startTime: chapter.startTime, // In milliseconds
+      endTime: chapter.endTime, // In milliseconds
+      title: chapter.title,
+      imageUrl: chapter.imageUrl, // Optional
+    });
+  });
+
+  // Write new MP3 file
+  writer.addTag();
+  const taggedBuffer = Buffer.from(writer.arrayBuffer);
+  fs.writeFileSync('output.mp3', taggedBuffer);
+}
+```
+
+---
+
+### 3. **Integrate into `getEpisodeChapters`**
+Modify `getEpisodeChapters` to include a step for writing the chapters into an MP3 file:
+
+```javascript
+const addChaptersToMp3 = require('./addChaptersToMp3'); // Your helper function
+
+const getEpisodeChapters =
+  (daos) =>
+  async (episode) => {
+    const contentChildren = await daos.content.getAllContentChildren(episode, {
+      sort: {
+        field: ContentSortFields.ORDINAL,
+        direction: SortDirections.ASC,
+      },
+    });
+
+    const chapterData = contentChildren.map((c) => {
+      const chapterImage = c.images?.find(
+        (imageData) => imageData.type === ViewImageTypes.CONTENT,
+      );
+
+      return {
+        startTime: c.mediaStartTime * 1000, // Convert to ms
+        endTime: c.mediaStopTime * 1000, // Convert to ms
+        imageUrl: chapterImage
+          ? `${chapterImage.baseUrl}/${chapterImage.imageId}/${chapterImage.maxSize}.jpg`
+          : undefined,
+        title: c.title,
+      };
+    }).sort((a, b) => a.startTime - b.startTime);
+
+    if (chapterData.length && chapterData[0].startTime !== 0) {
+      chapterData.unshift({
+        startTime: 0,
+        endTime: chapterData[0].startTime,
+        title: 'Introduction',
+      });
+    }
+
+    // Path to MP3 file to be tagged
+    const mp3FilePath = `/path/to/${episode.fileName}.mp3`;
+
+    await addChaptersToMp3(mp3FilePath, chapterData);
+
+    return { version: '1.0', chapters: chapterData };
+  };
+```
+
+---
+
+### 4. **Testing the Integration**
+1. Ensure the MP3 file is correctly tagged with chapter data.
+2. Test the output in Apple Podcasts or any player that supports ID3 chapter tags.
+
+---
+
+### Notes:
+- **Apple Music Compatibility**: Confirm that Apple Podcasts recognizes the chapter tags in your MP3 files. This depends on proper CHAP/CTOC tagging and player support.
+- **Error Handling**: Add error handling for cases where chapters cannot be written or data is incomplete.
+- **Dependencies**: Ensure libraries like `id3-writer` support the specific ID3 frames you need, or implement custom CHAP/CTOC frames.
+
+Let me know if you need help with specific parts of the implementation!
+
+## NEW LINE
+<BR>
+
+
+To adapt your current code so it can create Apple Podcasts-compatible chapters, you need to adhere to the **Podcast Namespace Chapter Spec** while ensuring it aligns with Apple's specific requirements for podcasts.
+
+Here’s a step-by-step guide to enhancing the existing code to support Apple Music podcasts chapters:
+
+---
+
+### **Key Adjustments**
+
+1. **Follow Podcast Namespace Standards**:
+   The current implementation already aligns with the JSON chapters spec. Apple Music podcasts support this format, but Apple primarily focuses on ID3 tags for chapters. If JSON-based chapters are uploaded alongside the podcast, the `chapterData` can serve both purposes.
+
+2. **Enhance Chapter Metadata for Apple Compatibility**:
+   Ensure the chapter metadata includes:
+   - `startTime` and `endTime`: Explicitly formatted as `hh:mm:ss` (or milliseconds if JSON spec demands it).
+   - Optional `imageUrl`: Apple can display chapter images.
+   - `title`: A clear, concise title for each chapter.
+
+3. **Export or Write the Chapters**:
+   Apple Music may require chapters in:
+   - **ID3 metadata**: Embedded directly into the MP3 file.
+   - **JSON**: Separate JSON file hosted alongside the audio.
+
+4. **Integrate the Chapters into Your Workflow**:
+   Modify the function to:
+   - Write chapters into the podcast file as metadata (using an ID3 library like `node-id3`).
+   - Optionally save a `.chapters.json` file for additional hosting needs.
+
+---
+
+## **Updated Code**
+Here's how you can extend the existing code to export chapters in both JSON and ID3 formats:
+
+```javascript
+const fs = require("fs");
+const NodeID3 = require("node-id3");
+
+const getEpisodeChapters =
+  (daos) =>
+  async (episode, filePath) => {
+    const contentChildren = await daos.content.getAllContentChildren(episode, {
+      sort: {
+        field: ContentSortFields.ORDINAL,
+        direction: SortDirections.ASC,
+      },
+    });
+
+    const chapterData = contentChildren
+      .map((c) => {
+        const chapterImage = c.images?.find(
+          (imageData) => imageData.type === ViewImageTypes.CONTENT
+        );
+
+        return {
+          startTime: c.mediaStartTime,
+          endTime: c.mediaStopTime,
+          ...(chapterImage
+            ? {
+                imageUrl: `${chapterImage.baseUrl}/${chapterImage.imageId}/${chapterImage.maxSize}.jpg`,
+              }
+            : {}),
+          title: c.title,
+        };
+      })
+      .sort((a, b) => a.startTime - b.startTime);
+
+    if (
+      chapterData.length &&
+      timespanToMilliseconds(chapterData[0].startTime) !== 0
+    ) {
+      chapterData.unshift({
+        startTime: "00:00:00",
+        endTime: chapterData[0].startTime,
+        title: "Introduction",
+      });
+    }
+
+    // Add Apple-compatible chapters to ID3
+    addChaptersToFile(filePath, chapterData);
+
+    // Optionally export JSON chapters
+    exportChaptersToJson(filePath, chapterData);
+
+    return chapterData;
+  };
+
+// Function to add chapters to an MP3 file using ID3 tags
+function addChaptersToFile(filePath, chapterData) {
+  const tags = {
+    title: "Podcast Episode",
+    customText: chapterData.map((chapter, index) => ({
+      description: `Chapter ${index + 1}`,
+      value: `Title: ${chapter.title}, Start: ${chapter.startTime}, End: ${chapter.endTime}${
+        chapter.imageUrl ? `, Image: ${chapter.imageUrl}` : ""
+      }`,
+    })),
+  };
+
+  const success = NodeID3.write(tags, filePath);
+  if (!success) {
+    console.error("Error writing chapters to MP3 file.");
+  } else {
+    console.log("Chapters successfully written to MP3.");
+  }
+}
+
+// Function to export chapters to a JSON file
+function exportChaptersToJson(filePath, chapterData) {
+  const jsonFilePath = filePath.replace(".mp3", ".chapters.json");
+
+  const jsonContent = {
+    version: "1.2",
+    chapters: chapterData.map((chapter) => ({
+      startTime: timespanToMilliseconds(chapter.startTime),
+      endTime: timespanToMilliseconds(chapter.endTime),
+      img: chapter.imageUrl || null,
+      title: chapter.title,
+      toc: true, // Optional: Add table of contents marker if necessary
+    })),
+  };
+
+  fs.writeFileSync(jsonFilePath, JSON.stringify(jsonContent, null, 2));
+  console.log(`Chapters exported to JSON file: ${jsonFilePath}`);
+}
+
+// Utility function to convert timespan to milliseconds
+function timespanToMilliseconds(timespan) {
+  const [hours, minutes, seconds] = timespan.split(":").map(Number);
+  return (hours * 3600 + minutes * 60 + seconds) * 1000;
+}
+```
+
+---
+
+### **How It Works**
+1. **Process the Chapters**:
+   - Extracts and sorts chapters based on `startTime`.
+   - Adds an "Introduction" if the first chapter doesn’t start at `00:00:00`.
+
+2. **Embed Chapters in ID3**:
+   - Writes chapters as custom text (`TXXX` frames) into the MP3 file for Apple compatibility.
+
+3. **Export Chapters to JSON**:
+   - Saves a `.chapters.json` file alongside the MP3 for hosting.
+
+---
+
+### **Testing the Integration**
+1. Replace `filePath` with the actual path to your MP3 file.
+2. Run the function:
+   ```javascript
+   getEpisodeChapters(daos)(episode, "path/to/your-podcast.mp3");
+   ```
+3. Validate:
+   - Open the MP3 in a player (like VLC) that supports chapter metadata.
+   - Inspect the `.chapters.json` file.
+
+Would you like additional help testing or modifying the script for specific needs?
+
+
+
+
+
+
+
+# NEW CODE 
+
+Of course! Let’s break down the original handler function in detail. This function is a **Lambda handler** written in JavaScript. It processes file-related events from an **S3 bucket**, specifically when files are uploaded or deleted. Here's what each part does:
+
+---
+
+### **Overview of the Function**
+
+- **Purpose**: 
+  - Handle file uploads and deletions in an S3 bucket.
+  - Update metadata in a database.
+  - Clear cached content from CloudFront.
+  - Notify other systems about significant events (e.g., a video file upload).
+
+- **Key Components**:
+  1. **Event Parsing**: Understand what happened (upload or deletion).
+  2. **Metadata Updates**: Adjust media-related metadata (like transcript status).
+  3. **Cache Management**: Clear related CloudFront cache when files change.
+  4. **Notifications**: Inform other systems of video file uploads.
+
+---
+
+### **Detailed Breakdown**
+
+Here’s the function, explained step by step:
+
+#### **1. Function Entry Point**
+```javascript
+const handler = async (event) => {
+  try {
+```
+- **Purpose**: The function starts here. `event` contains data about what triggered the Lambda (in this case, S3 events).
+- **`async`**: Indicates the function uses asynchronous operations like API calls or database updates.
+
+#### **2. Extract Key Information from the Event**
+```javascript
+    const eventName = event.Records[0].eventName
+    const key = event.Records[0].s3.object.key
+    const mediaId = key.split('/')[0]
+```
+- **`event.Records`**: This is an array of records from the S3 event. Each record corresponds to a file event.
+- **`eventName`**: The type of event (e.g., `ObjectCreated` or `ObjectRemoved`).
+- **`key`**: The path (key) of the file in the S3 bucket.
+- **`mediaId`**: Extracts a part of the key (before the first `/`). This might uniquely identify a media item.
+
+---
+
+#### **3. Handle File Deletion Events**
+```javascript
+    if (eventName.startsWith('ObjectRemoved')) {
+      console.log(`Creating invalidation for /${key} on distribution ${MEDIA_DISTRIBUTION_ID}`);
+```
+- **Purpose**: If the event indicates a file deletion (`ObjectRemoved`):
+  - Logs the event.
+  - Prepares to clear the CloudFront cache for the file.
+
+---
+
+#### **4. Handle Transcripts Specifically**
+```javascript
+      if (key.endsWith('transcript.json')) {
+        console.log(`Setting hasTranscript to false for mediaId: ${mediaId}`);
+        await datasources.media.updateMedia({
+          id: mediaId,
+          hasTranscript: false,
+        });
+      }
+```
+- **Purpose**: If a file named `transcript.json` is deleted:
+  - Updates the database to set `hasTranscript` to `false` for the associated media ID.
+
+---
+
+#### **5. Clear CloudFront Cache**
+```javascript
+      await clearCache({
+        distributionId: MEDIA_DISTRIBUTION_ID,
+        paths: [`/${key}`],
+      });
+      return;
+    }
+```
+- **Purpose**: After handling deletion-specific tasks:
+  - Invalidates (clears) the CloudFront cache for the file to ensure users don’t see stale content.
+
+---
+
+#### **6. Handle File Upload Events**
+```javascript
+    const objectHead = await s3Client.send(
+      new HeadObjectCommand({
+        Bucket: MEDIA_S3_BUCKET,
+        Key: key,
+      }),
+    );
+```
+- **Purpose**: For uploaded files:
+  - Retrieves metadata (e.g., `ContentType`) using the `HeadObjectCommand`.
+
+---
+
+#### **7. Update Transcript Metadata on Upload**
+```javascript
+    if (key.endsWith('transcript.json')) {
+      console.log(`Setting hasTranscript to true for mediaId: ${mediaId}`);
+      await datasources.media.updateMedia({
+        id: mediaId,
+        hasTranscript: true,
+      });
+    }
+```
+- **Purpose**: If a `transcript.json` file is uploaded:
+  - Updates the database to set `hasTranscript` to `true`.
+
+---
+
+#### **8. Notify Other Systems About Video Uploads**
+```javascript
+    if (objectHead.ContentType === MediaUploadMimeTypes[AssetTypes.MP4]) {
+      console.log(`Sending SNS message for video file uploaded: ${key}`);
+```
+- **Purpose**: If an uploaded file is a video (`ContentType` matches `MP4`):
+  - Logs the event.
+  - Prepares to notify other systems using an SNS message.
+
+---
+
+#### **9. Retry Logic to Fetch Associated Content**
+```javascript
+      const getContent = async (attempts) => {
+        return new Promise((resolve, reject) => {
+          datasources.external
+            .getPrimaryContentForMedia(mediaId)
+            .then((content) => {
+              if (!content) {
+                if (attempts < 5) {
+                  attempts += 1;
+                  setTimeout(async () => {
+                    resolve(getContent(attempts));
+                  }, 10000 * attempts);
+                } else {
+                  console.log('Max attempts reached');
+                  reject(new Error('Max attempts reached'));
+                }
+              } else {
+                resolve(content);
+              }
+            })
+            .catch((err) => {
+              console.error('Error getting content for mediaId:', err);
+              reject(new Error(`Error getting content for mediaId: ${mediaId}`));
+            });
+        });
+      };
+      const content = await getContent(0);
+```
+- **Purpose**: 
+  - Tries multiple times to fetch content metadata for the media.
+  - Uses exponential backoff (10 seconds, 20 seconds, etc.) to prevent overloading the external service.
+
+---
+
+#### **10. Send an SNS Notification**
+```javascript
+      await snsClient.send(
+        new PublishCommand({
+          TopicArn: VIDEO_FILE_UPLOADED_SNS_TOPIC,
+          Message: JSON.stringify({
+            bucket: MEDIA_S3_BUCKET,
+            key,
+            mediaId,
+            contentId: content.id,
+          }),
+        }),
+      );
+    }
+```
+- **Purpose**: If content is successfully retrieved:
+  - Publishes a message to an SNS topic about the new video file upload.
+
+---
+
+#### **11. Error Handling**
+```javascript
+  } catch (error) {
+    console.error(error);
+    try {
+      console.error(JSON.stringify(error, null, 2));
+    } catch (error) {
+      // ignore stringify error
+    }
+    const message = createSNSMessage(
+      'Failed to complete media file processing',
+      ErrorTypes.INTERNAL_SERVER_ERROR,
+      ['Error message:', `\t${error.message}`],
+    );
+    await sendErrorSNS(message, ERROR_SNS_TOPIC, ERROR_SNS_REGION);
+    throw error;
+  }
+};
+```
+- **Purpose**: If anything goes wrong:
+  - Logs the error.
+  - Publishes a notification to an error SNS topic with details.
+  - Rethrows the error to indicate failure.
+
+---
+
+### **Summary of Key Processes**
+
+1. **S3 Event**: Triggers when files are uploaded or removed.
+2. **File Type Check**: Handles specific files (e.g., `transcript.json`, MP4).
+3. **Database Update**: Adjusts metadata based on file type.
+4. **Cache Invalidation**: Clears CloudFront cache for changed files.
+5. **Notification**: Publishes SNS messages for significant events.
+6. **Error Reporting**: Logs and notifies about errors.
+
+---
+
+If you'd like further clarification on any part or guidance on coding concepts used here, let me know! 😊
+
+
+I'm suppose to fix an error we are having with our apple music podcasts not recieving segements/chapters. We are going to use id3 tags to add these chapters to the podcast episodes which is the record recieved in the code. How can I add that function in the handler to grab the metadata to update the episode and add these id3 tags?
+
+
+
+
+
+This code is an **AWS Lambda function** that handles events triggered by changes in an S3 bucket. It processes files (like JSON or media files) uploaded or deleted from the bucket and takes specific actions based on the file type and the event. Here's a breakdown:
+
+---
+
+### 1. **Understand the Setup**:
+- **Triggered by S3 events**: When a file is uploaded or deleted in an S3 bucket, an event is triggered.
+- **Handles both uploads and deletions**:
+  - *Deletions*: If a file is deleted, it clears cache and updates some metadata.
+  - *Uploads*: If a file is uploaded, it may process and update the file or notify other systems (like via SNS).
+
+---
+
+### 2. **Breaking Down the Logic**:
+#### a) **Extract Key Information**:
+- Reads the event details:
+  - `eventName`: Checks if the event is about a file being added or removed.
+  - `key`: Gets the file path.
+  - `mediaId`: Extracts an ID (the first part of the file path).
+
+---
+
+#### b) **Handle File Deletions**:
+- If a file is deleted (`ObjectRemoved` event):
+  - Clears the CDN cache for the file.
+  - If the file was a `transcript.json`, it updates a database to say that the media no longer has a transcript (`hasTranscript: false`).
+
+---
+
+#### c) **Handle File Uploads**:
+- For uploaded files, it:
+  - Checks the file type using its metadata (`ContentType`).
+  - Performs specific actions based on the file type:
+    - **Transcript JSON**: Updates the database to say the media now has a transcript (`hasTranscript: true`).
+    - **MP4 Video**:
+      1. Tries to find associated content in the database (using a retry mechanism).
+      2. Sends a notification (SNS message) with details about the video and its associated content.
+
+---
+
+#### d) **(Commented Out) Podcast Handling**:
+- There’s commented-out code for handling podcast files (`mp3`):
+  - Downloads the file from S3.
+  - Fetches chapter data for the podcast.
+  - Adds ID3 tags (metadata) to the podcast file.
+  - Uploads the updated podcast file back to S3.
+
+---
+
+### 3. **Error Handling**:
+- If any error occurs:
+  - Logs the error.
+  - Sends an error notification (via SNS).
+  - Throws the error so the function fails gracefully.
+
+---
+
+### 4. **Key Concepts**:
+- **S3**: Where the files are stored.
+- **SNS (Simple Notification Service)**: Used to send notifications when important actions occur.
+- **Database Updates**: Metadata about the files is stored in a database and updated when files are added or removed.
+- **Retry Logic**: For certain tasks (like finding content in the database), it retries a few times before failing.
+
+---
+
+### 5. **Why It's Useful**:
+This Lambda function helps automate tasks related to media file management. For example:
+- Ensures accurate metadata (e.g., if transcripts are available).
+- Notifies other systems when important events (like a video upload) happen.
+- Clears old cached versions of files to ensure users see the latest changes. 
+
+---
+
+### 6. **Simplified Flowchart**:
+1. Event triggers Lambda (file added/removed).
+2. Extract key info (`key`, `mediaId`).
+3. **If deleted**:
+   - Clear cache.
+   - Update database (e.g., remove transcript info).
+4. **If uploaded**:
+   - Check file type.
+   - Update database or send a notification (SNS).
+5. Handle errors if something goes wrong.
+
+```js
+if (objectHead.ContentType === 'audio/mpeg') {
+
+  
+
+
+}
+
+
+
+
+```
